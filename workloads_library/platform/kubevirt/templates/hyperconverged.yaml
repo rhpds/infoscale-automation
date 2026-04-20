@@ -6,5 +6,5 @@ metadata:
     argocd.argoproj.io/sync-wave: "3"
   name: kubevirt-hyperconverged
   namespace: openshift-cnv
-spec: []
+spec:
   enableCommonBootImageImport: false
