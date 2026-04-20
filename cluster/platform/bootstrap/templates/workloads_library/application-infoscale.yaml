@@ -12,7 +12,7 @@ spec:
     path: {{ .Values.kubevirt.git.path }}
     helm:
       values: |
-        nodeName: {{ .Values.nodeName | quote }}
+        allNodeNames: {{ .Values.allNodeNames | quote }}
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
