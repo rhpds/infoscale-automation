@@ -149,7 +149,7 @@ rhoai:
 # Web Terminal — deploys the Web Terminal operator and creates the WebTerminal CR.
 # No infra-layer pair; the operator installs via this chart directly.
 webterminal:
-  enabled: false
+  enabled: true
   git:
     path: workloads_library/platform/webterminal
     <<: *git_defaults
