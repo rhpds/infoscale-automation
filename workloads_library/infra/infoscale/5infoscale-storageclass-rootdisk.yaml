@@ -1,0 +1,12 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: infoscale-rootdisk-sc
+  annotations: 
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: org.veritas.infoscale
+parameters:
+  layout: concat
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+volumeBindingMode: Immediate

@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: svcopenmrs
+  namespace: openmrs
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  selector:
+    kubevirt.io/domain: openmrs01
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: openmrs
+  namespace: openmrs
+spec:
+  to:
+    kind: Service
+    name: svcopenmrs
+  port:
+    targetPort: 80
+  tls:
+    termination: edge
