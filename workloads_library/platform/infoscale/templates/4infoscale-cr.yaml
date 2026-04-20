@@ -6,7 +6,7 @@ metadata:
 spec:
   encrypted: false
   clusterInfo:
-    - nodeName: ocpprod01.ocp01.arctera.local
+    - nodeName: {{ .Values.nodeName | quote }}
       excludeDevice:
       - "/dev/disk/by-path/pci-0000:08:00.0"
   sameEncKey: false

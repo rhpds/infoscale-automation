@@ -23,7 +23,7 @@ spec:
         helm:
           parameters:
             # Pass the node name into your Helm chart
-            - name: "spec.nodeName"
+            - name: "nodeName"
               value: "{{key}}"
       destination:
         server: https://kubernetes.default.svc
