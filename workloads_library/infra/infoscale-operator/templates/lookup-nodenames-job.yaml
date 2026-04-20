@@ -43,7 +43,7 @@ spec:
         - -c
         - |
           NODES=$(kubectl get nodes -o jsonpath='{.items[*].metadata.name}')
-          COMMAND="kubectl create configmap node-list-config -n argocd --dry-run=client -o yaml"
+          COMMAND="kubectl create configmap node-list-config -n openshift-gitops --dry-run=client -o yaml"
 
           for node in $NODES; do
             COMMAND="$COMMAND --from-literal=$node=active"
