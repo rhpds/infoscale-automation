@@ -21,6 +21,9 @@ spec:
         spec:
           nodeName: {{ `{{name}}` | quote }}
   template:
+    metadata:
+      # This metadata is for the Applications being created
+      name: {{ `app-{{name}}` | quote }}
     spec:
       project: default
       source:
