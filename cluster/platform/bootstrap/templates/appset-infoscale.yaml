@@ -12,7 +12,6 @@ spec:
         namespace: openshift-gitops
   template:
     metadata:
-      # {{key}} will be 'node-alpha', 'node-beta', etc.
       name: infoscale
     spec:
       project: default
@@ -24,7 +23,7 @@ spec:
           parameters:
             # Pass the node name into your Helm chart
             - name: "nodeName"
-              value: "{{key}}"
+              value: '{{"{{key}}"}}'
       destination:
         server: https://kubernetes.default.svc
         namespace: infoscale-vtas
