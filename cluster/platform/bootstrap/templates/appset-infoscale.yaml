@@ -20,6 +20,7 @@ spec:
             template:
               name: '{{"{{name}}"}}' # ESCAPED FOR HELM
             requeueAfterSeconds: 60
+  template:
     spec:
       project: default
       source:
