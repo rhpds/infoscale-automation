@@ -42,11 +42,16 @@ spec:
         - /bin/sh
         - -c
         - |
-          NODES=$(kubectl get nodes -o jsonpath='{.items[*].metadata.name}')
-          COMMAND="kubectl create configmap node-list-config -n openshift-gitops --dry-run=client -o yaml"
+        # 1. Get node names and format into JSON array of objects
+        # Example Output: [{"name":"node-a"},{"name":"node-b"}]
+        NODE_JSON=$(kubectl get nodes -o json | jq -c '[.items[].metadata.name | {name: .}]')
 
-          for node in $NODES; do
-            COMMAND="$COMMAND --from-literal=$node=active"
-          done
+        # 2. Create/Update the ConfigMap with the required label and 'iterations' key
+        kubectl create configmap node-list-config \
+          --from-literal=iterations="$NODE_JSON" \
+          --dry-run=client -o yaml > cm.yaml
 
-          $COMMAND | kubectl apply -f -
+        # Add the label so the ApplicationSet selector can find it
+        sed -i '/metadata:/a \  labels:\n    nodes-found: "true"' cm.yaml
+
+        kubectl apply -f cm.yaml -n openshift-gitops
