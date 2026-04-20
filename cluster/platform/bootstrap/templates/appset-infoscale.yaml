@@ -1,0 +1,45 @@
+{{ if .Values.infoscale.enabled -}}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: infoscale
+  namespace: openshift-gitops
+spec:
+  generators:
+    - configMap:
+        name: node-list-config
+        namespace: openshift-gitops
+  template:
+    metadata:
+      # {{key}} will be 'node-alpha', 'node-beta', etc.
+      name: infoscale
+    spec:
+      project: default
+      source:
+        repoURL: {{ .Values.infoscale.git.repoURL }}
+        targetRevision: {{ .Values.infoscale.git.targetRevision }}
+        path: {{ .Values.infoscale.git.path }}
+        helm:
+          parameters:
+            # Pass the node name into your Helm chart
+            - name: "spec.nodeName"
+              value: "{{key}}"
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: infoscale-vtas
+      # Ensure the app is deleted if the node is removed from the ConfigMap
+      syncPolicy:
+        automated:
+          enabled: true
+        syncOptions:
+          - CreateNamespace=true
+          - SkipDryRunOnMissingResource=true
+          - RespectIgnoreDifferences=true
+        retry:
+          limit: 10
+          backoff:
+            duration: 5s
+            factor: 2
+            maxDuration: 3m
+{{- end }}

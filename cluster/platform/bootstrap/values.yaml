@@ -49,6 +49,12 @@ platformExampleSharedGitlab:
     path: cluster/platform/platform-example-shared-gitlab
     <<: *git_defaults
 
+infoscale:
+  enabled: true
+  git:
+    path: workloads_library/platform/infoscale
+    <<: *git_defaults
+
 # ---------------------------------------------------------------------------
 # OAuthAccountOperator — manages HTPasswd/LDAP identity providers on the cluster.
 # Disabled by default. The `config` block below is passed to the operator chart.
