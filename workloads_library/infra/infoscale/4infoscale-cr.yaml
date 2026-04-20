@@ -7,6 +7,8 @@ spec:
   encrypted: false
   clusterInfo:
     - nodeName: ocpprod01.ocp01.arctera.local
+      excludeDevice:
+      - - "/dev/disk/by-path/pci-0000:08:00.0"
   sameEncKey: false
   enableScsi3pr: false
   isSharedStorage: true
