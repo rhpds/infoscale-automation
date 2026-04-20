@@ -1,0 +1,67 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: create-infoscale-cr-job
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: create-infoscale-cr-job
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: create-infoscale-cr-job
+  namespace: default
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: create-infoscale-cr-job
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: create-infoscale-cr-job
+      containers:
+      - name: create-infoscale-cr-job
+        image: bitnami/kubectl:latest
+        #image: image-registry.openshift-image-registry.svc:5000/openshift/cli
+        command:
+        - /bin/sh
+        - -c
+        - |
+          # 1. Create the JSON array of objects
+          NODE=$(kubectl get nodes -o name  | sed 's|.*/||')
+
+          cat <<EOF | kubectl apply -f -
+          apiVersion: infoscale.veritas.com/v1
+          kind: InfoScaleCluster
+          metadata:
+            name: cluster-prod
+            namespace: infoscale-vtas
+          spec:
+            encrypted: false
+            clusterInfo:
+              - nodeName: $NODE
+                excludeDevice:
+                - "/dev/disk/by-path/pci-0000:08:00.0"
+            sameEncKey: false
+            enableScsi3pr: false
+            isSharedStorage: true
+            version: 9.1.2
+          EOF
+
+          # 2 wait unti the CR is created by watching
+          # oc get infoscalecluster -n infoscale-vtas
