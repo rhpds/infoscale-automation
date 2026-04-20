@@ -2,3 +2,4 @@ operator:
   channel: candidate
   startingCSV: kubevirt-hyperconverged-operator.v4.20.3
   installPlanApproval: Manual
+  enableVersionPinning: false
