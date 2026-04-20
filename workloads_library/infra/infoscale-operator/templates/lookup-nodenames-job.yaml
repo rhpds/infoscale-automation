@@ -53,10 +53,10 @@ spec:
       containers:
       - name: node-lookup-job
         image: bitnami/kubectl:latest
-            command:
-            - /bin/sh
-            - -c
-            - |
-              NODES=$(kubectl get nodes -o jsonpath='{.items[*].metadata.name}' | tr ' ' ',')
-              kubectl create configmap node-list-config --from-literal=nodeList=$NODES \
-                -n argocd --dry-run=client -o yaml | kubectl apply -f -
+        command:
+        - /bin/sh
+        - -c
+        - |
+          NODES=$(kubectl get nodes -o jsonpath='{.items[*].metadata.name}' | tr ' ' ',')
+          kubectl create configmap node-list-config --from-literal=nodeList=$NODES \
+            -n argocd --dry-run=client -o yaml | kubectl apply -f -
