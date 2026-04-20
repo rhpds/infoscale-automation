@@ -8,18 +8,13 @@ metadata:
 spec:
   generators:
     - clusterDecisionResource:
-      apiVersion: v1
-      kind: ConfigMap
-      # Explicitly point to the CM created by your Job
-      configMapRef: node-list-config
-      labelSelector:
-        matchLabels:
-          nodes-found: "true"
-      template:
-        metadata:
-          name: {{ `{{name}}` | quote }}
-        spec:
-          nodeName: {{ `{{name}}` | quote }}
+        apiVersion: v1
+        kind: ConfigMap
+        # Explicitly point to the CM created by your Job
+        configMapRef: node-list-config
+        labelSelector:
+          matchLabels:
+            nodes-found: "true"
   template:
     metadata:
       # This metadata is for the Applications being created
