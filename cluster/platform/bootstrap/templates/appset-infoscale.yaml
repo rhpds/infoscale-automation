@@ -11,10 +11,17 @@ spec:
         apiVersion: v1
         kind: ConfigMap
         # Explicitly point to the CM created by your Job
-        name: node-list-config
+        configMapRef: node-list-config
         labelSelector:
           matchLabels:
             nodes-found: "true"
+        template:
+          metadata:
+            name: {{ `{{name}}` | quote }}
+          spec:
+            # We add a dummy value here to satisfy the 'Required' spec field
+            nodeName: {{ `{{name}}` | quote }}
+        requeueAfterSeconds: 60
   template:
     metadata:
       # This metadata is for the Applications being created
