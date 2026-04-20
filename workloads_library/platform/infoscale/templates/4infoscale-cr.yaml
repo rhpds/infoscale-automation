@@ -13,4 +13,3 @@ spec:
   enableScsi3pr: false
   isSharedStorage: true
   version: 9.1.2
-

@@ -28,7 +28,7 @@
 # Override repoURL or targetRevision per-workload only if pointing somewhere else.
 # ---------------------------------------------------------------------------
 default_settings: &git_defaults
-  repoURL: https://github.com/rhpds/ci-template-gitops.git
+  repoURL: https://github.com/rhpds/infoscale-automation.git
   targetRevision: main
 
 # ---------------------------------------------------------------------------
