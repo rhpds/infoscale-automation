@@ -8,18 +8,18 @@ metadata:
 spec:
   generators:
     - clusterDecisionResource:
-            apiVersion: v1
-            kind: ConfigMap
-            # Explicitly point to the CM created by your Job
-            configMapRef: node-list-config
-            labelSelector:
-              matchLabels:
-                nodes-found: "true"
-            # This tells the generator: "The objects in the JSON array
-            # have a field called 'name', use that for the generated apps."
-            template:
-              name: '{{"{{name}}"}}' # ESCAPED FOR HELM
-            requeueAfterSeconds: 60
+      apiVersion: v1
+      kind: ConfigMap
+      # Explicitly point to the CM created by your Job
+      configMapRef: node-list-config
+      labelSelector:
+        matchLabels:
+          nodes-found: "true"
+      template:
+        metadata:
+          name: {{ `{{name}}` | quote }}
+        spec:
+          nodeName: {{ `{{name}}` | quote }}
   template:
     spec:
       project: default
