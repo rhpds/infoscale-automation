@@ -1,15 +1,15 @@
-{{ if .Values.mtcOperator.enabled -}}
+{{ if .Values.infoscaleOperator.enabled -}}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: mtc-operator
+  name: infoscale-operator
   namespace: openshift-gitops
 spec:
   project: infra
   source:
-    repoURL: {{ .Values.mtcOperator.git.repoURL }}
-    targetRevision: {{ .Values.mtcOperator.git.targetRevision }}
-    path: {{ .Values.mtcOperator.git.path }}
+    repoURL: {{ .Values.infoscaleOperator.git.repoURL }}
+    targetRevision: {{ .Values.infoscaleOperator.git.targetRevision }}
+    path: {{ .Values.infoscaleOperator.git.path }}
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
