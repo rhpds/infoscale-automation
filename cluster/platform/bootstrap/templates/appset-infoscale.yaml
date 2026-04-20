@@ -7,15 +7,12 @@ metadata:
   namespace: openshift-gitops
 spec:
   generators:
-    - matrix:
-        generators:
-          # This generator "scans" the ConfigMap
-          - clusterDecisionResource:
-              configMapRef: node-list-config
-              labelSelector:
-                matchLabels:
-                  nodes-found: "true"
-              requeueAfterSeconds: 60
+    - clusterDecisionResource:
+        configMapRef: node-list-config
+        labelSelector:
+          matchLabels:
+            nodes-found: "true"
+        requeueAfterSeconds: 60
   template:
     metadata:
       name: infoscale
