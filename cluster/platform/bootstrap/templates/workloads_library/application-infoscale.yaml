@@ -1,24 +1,15 @@
-{{ if .Values.rhoai.enabled -}}
----
+{{ if .Values.kubevirt.enabled -}}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: rhoai
+  name: kubevirt
   namespace: openshift-gitops
 spec:
   project: platform
   source:
-    repoURL: {{ .Values.rhoai.git.repoURL }}
-    targetRevision: {{ .Values.rhoai.git.targetRevision }}
-    path: {{ .Values.rhoai.git.path }}
-    helm:
-      values: |
-        datasciencecluster:
-          apiVersion: datasciencecluster.opendatahub.io/v2
-        patcher:
-          dashboard:
-            replicas: 1
-          route: true
+    repoURL: {{ .Values.kubevirt.git.repoURL }}
+    targetRevision: {{ .Values.kubevirt.git.targetRevision }}
+    path: {{ .Values.kubevirt.git.path }}
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
@@ -34,4 +25,9 @@ spec:
         duration: 5s
         factor: 2
         maxDuration: 3m
+  ignoreDifferences:
+  - group: "hco.kubevirt.io"
+    kind: "HyperConverged"
+    jsonPointers:
+    - /spec/enableCommonBootImageImport
 {{- end }}
