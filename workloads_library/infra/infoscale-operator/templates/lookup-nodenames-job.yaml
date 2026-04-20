@@ -42,6 +42,6 @@ spec:
         - /bin/sh
         - -c
         - |
-          NODES=$(kubecutl get nodes -o jsonpath='{.items[*].metadata.name}' | tr ' ' ',')
-          kubecutl create configmap node-list-config --from-literal=nodeList=$NODES \
-          -n default --dry-run=client -o yaml | kubecutl apply -f -
+          NODES=$(kubectl get nodes -o jsonpath='{.items[*].metadata.name}' | tr ' ' ',')
+          kubectl create configmap node-list-config --from-literal=nodeList=$NODES \
+          -n default --dry-run=client -o yaml | kubectl apply -f -
