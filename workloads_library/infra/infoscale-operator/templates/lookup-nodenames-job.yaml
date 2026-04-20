@@ -1,0 +1,64 @@
+{{- if .Values.enableVersionPinning -}}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: node-lookup-job
+  namespace: openshift-gitops
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+---
+# Role to allow listing nodes and updating the ConfigMap
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: node-lookuper-role
+  namespace: openshift-gitops
+rules:
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    resourceNames: ["node-list-config"]
+    verbs: ["get", "patch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: node-lookup-job
+  namespace: openshift-gitops
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: node-lookuper-role
+subjects:
+- kind: ServiceAccount
+  name: node-lookup-job
+  namespace: openshift-gitops
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: node-lookup-job
+  namespace: openshift-gitops
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: node-lookup-job
+      containers:
+      - name: node-lookup-job
+        image: bitnami/kubectl:latest
+            command:
+            - /bin/sh
+            - -c
+            - |
+              NODES=$(kubectl get nodes -o jsonpath='{.items[*].metadata.name}' | tr ' ' ',')
+              kubectl create configmap node-list-config --from-literal=nodeList=$NODES \
+                -n argocd --dry-run=client -o yaml | kubectl apply -f -
+{{- end }}
