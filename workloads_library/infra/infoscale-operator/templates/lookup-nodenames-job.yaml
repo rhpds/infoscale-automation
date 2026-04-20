@@ -36,11 +36,12 @@ spec:
       serviceAccountName: node-lookup-job
       containers:
       - name: node-lookup-job
-        image: image-registry.openshift-image-registry.svc:5000/openshift/cli
+        image: bitnami/kubectl:latest
+        #image: image-registry.openshift-image-registry.svc:5000/openshift/cli
         command:
         - /bin/sh
         - -c
         - |
           NODES=$(oc get nodes -o jsonpath='{.items[*].metadata.name}' | tr ' ' ',')
           oc create configmap node-list-config --from-literal=nodeList=$NODES \
-            -n default --dry-run=client -o yaml | oc apply -f -
+          -n default --dry-run=client -o yaml | oc apply -f -
