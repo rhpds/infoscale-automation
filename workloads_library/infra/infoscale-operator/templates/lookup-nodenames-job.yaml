@@ -7,21 +7,6 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 ---
-# Role to allow listing nodes and updating the ConfigMap
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: node-lookuper-role
-  namespace: openshift-gitops
-rules:
-  - apiGroups: [""]
-    resources: ["nodes"]
-    verbs: ["get", "list"]
-  - apiGroups: [""]
-    resources: ["configmaps"]
-    resourceNames: ["node-list-config"]
-    verbs: ["get", "patch", "update"]
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -51,7 +36,7 @@ spec:
       serviceAccountName: node-lookup-job
       containers:
       - name: node-lookup-job
-        image: bitnami/kubectl:latest
+        image: image-registry.openshift-image-registry.svc:5000/openshift/cli
         command:
         - /bin/sh
         - -c
