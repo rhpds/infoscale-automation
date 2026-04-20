@@ -42,16 +42,13 @@ spec:
         - /bin/sh
         - -c
         - |
-          # 1. Get node names and format into JSON array of objects
-          # Example Output: [{"name":"node-a"},{"name":"node-b"}]
+          # 1. Create the JSON array of objects
           NODE_JSON=$(kubectl get nodes -o json | jq -c '[.items[].metadata.name | {name: .}]')
 
-          # 2. Create/Update the ConfigMap with the required label and 'iterations' key
-          kubectl create configmap node-list-config \
+          # 2. Create the ConfigMap YAML in memory and pipe it
+          # We use 'label' flag in kubectl to avoid the 'sed' hack
+          kubectl create configmap node-list-config -n openshift-gitops \
             --from-literal=iterations="$NODE_JSON" \
-            --dry-run=client -o yaml > cm.yaml
-
-          # Add the label so the ApplicationSet selector can find it
-          sed -i '/metadata:/a \  labels:\n    nodes-found: "true"' cm.yaml
-
-          kubectl apply -f cm.yaml -n openshift-gitops
+            --dry-run=client -o yaml | \
+          kubectl label -f - --local nodes-found=true -o yaml | \
+          kubectl apply -f -
