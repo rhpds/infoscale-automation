@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: node-lookup-job
-  namespace: openshift-gitops
+  namespace: default
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 ---
@@ -20,13 +20,13 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: node-lookup-job
-  namespace: openshift-gitops
+  namespace: default
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: node-lookup-job
-  namespace: openshift-gitops
+  namespace: default
   annotations:
     argocd.argoproj.io/sync-wave: "3"
 spec:
@@ -41,6 +41,6 @@ spec:
         - /bin/sh
         - -c
         - |
-          NODES=$(kubectl get nodes -o jsonpath='{.items[*].metadata.name}' | tr ' ' ',')
-          kubectl create configmap node-list-config --from-literal=nodeList=$NODES \
-            -n argocd --dry-run=client -o yaml | kubectl apply -f -
+          NODES=$(oc get nodes -o jsonpath='{.items[*].metadata.name}' | tr ' ' ',')
+          oc create configmap node-list-config --from-literal=nodeList=$NODES \
+            -n default --dry-run=client -o yaml | oc apply -f -
