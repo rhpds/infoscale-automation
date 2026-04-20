@@ -2,5 +2,7 @@ apiVersion: vlic.veritas.com/v1
 kind: License
 metadata:
   name: license-dev
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
 spec:
   licenseEdition: Enterprise

@@ -3,6 +3,8 @@ kind: InfoScaleCluster
 metadata:
   name: cluster-prod
   namespace: infoscale-vtas
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   encrypted: false
   clusterInfo:

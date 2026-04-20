@@ -5,6 +5,7 @@ kind: VolumeSnapshotClass
 metadata:
   name: csi-infoscale-snapclass
   annotations:
+    argocd.argoproj.io/sync-wave: "10"
     snapshot.storage.kubernetes.io/is-default-class: "true"
 driver: org.veritas.infoscale
 deletionPolicy: Delete
@@ -17,4 +18,3 @@ deletionPolicy: Delete
   # (optional) Specifies the size of the cache volume to be created for space-optimized snapshots.
   # If omitted, InfoScale internally chooses the cacheSize as 30% of orignial volume size.
   # cacheSize: 500m
-

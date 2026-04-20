@@ -3,6 +3,8 @@ kind: VirtualMachine
 metadata:
   name: openmrs01
   namespace: openmrs
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
   labels:
     app: openmrs01
 spec:

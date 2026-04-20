@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: svcopenmrs
   namespace: openmrs
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
 spec:
   ports:
     - port: 80
