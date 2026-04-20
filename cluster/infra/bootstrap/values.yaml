@@ -56,7 +56,7 @@ platform:
 # Enabled by default. Disable only if you are managing StorageClass separately.
 # ---------------------------------------------------------------------------
 defaultStorageclass:
-  enabled: true
+  enabled: false
   git:
     path: cluster/infra/default-storageclass
     <<: *git_defaults
@@ -102,6 +102,12 @@ keycloakResources:
 # See each workload's README in workloads_library/infra/<name>/ for details.
 # ===========================================================================
 
+infoscaleOperator:
+  enabled: true
+  git:
+    path: workloads_library/infra/infoscale-operator
+    <<: *git_defaults
+
 # Descheduler Operator — evicts pods to rebalance nodes.
 # Platform pair: descheduler (in platform values)
 deschedulerOperator:
@@ -113,7 +119,7 @@ deschedulerOperator:
 # KubeVirt (OpenShift Virtualization) Operator — runs VMs on OpenShift.
 # Platform pair: kubevirt (in platform values)
 kubevirtOperator:
-  enabled: false
+  enabled: true
   git:
     path: workloads_library/infra/kubevirt-operator
     <<: *git_defaults
