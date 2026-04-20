@@ -42,6 +42,11 @@ spec:
         - /bin/sh
         - -c
         - |
-          NODES=$(kubectl get nodes -o jsonpath='{.items[*].metadata.name}' | tr ' ' ',')
-          kubectl create configmap node-list-config --from-literal=nodeList=$NODES \
-          -n default --dry-run=client -o yaml | kubectl apply -f -
+          NODES=$(kubectl get nodes -o jsonpath='{.items[*].metadata.name}')
+          COMMAND="kubectl create configmap node-list-config -n argocd --dry-run=client -o yaml"
+
+          for node in $NODES; do
+            COMMAND="$COMMAND --from-literal=$node=active"
+          done
+
+          $COMMAND | kubectl apply -f -
