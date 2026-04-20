@@ -17,6 +17,7 @@ spec:
         {{- if .Values.platformValues }}
         {{- .Values.platformValues | toYaml | nindent 8 }}
         {{- end }}
+        nodeName: {{ .Values.nodeName | quote }}
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
