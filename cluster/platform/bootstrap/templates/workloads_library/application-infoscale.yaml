@@ -10,6 +10,9 @@ spec:
     repoURL: {{ .Values.kubevirt.git.repoURL }}
     targetRevision: {{ .Values.kubevirt.git.targetRevision }}
     path: {{ .Values.kubevirt.git.path }}
+    helm:
+      values: |
+        nodeName: {{ .Values.nodeName | quote }}
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
