@@ -108,6 +108,12 @@ infoscaleOperator:
     path: workloads_library/infra/infoscale-operator
     <<: *git_defaults
 
+infoscalePlatform:
+  enabled: false
+  git:
+    path: workloads_library/platform/infoscale
+    <<: *git_defaults
+
 # Descheduler Operator — evicts pods to rebalance nodes.
 # Platform pair: descheduler (in platform values)
 deschedulerOperator:
