@@ -7,11 +7,11 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
 spec:
   encrypted: false
-  clusterInfo:
-    - nodeName: {{ index .Values.allNodeNames 1 }}
-      excludeDevice:
-        - "/dev/disk/by-path/pci-0000:08:00.0"
   sameEncKey: false
   enableScsi3pr: false
   isSharedStorage: true
   version: 9.1.2
+  clusterInfo:
+  - nodeName: {{ index .Values.allNodeNames 1 | quote }}
+    excludeDevice:
+    - "/dev/disk/by-path/pci-0000:08:00.0"
