@@ -12,12 +12,12 @@ spec:
     path: cluster/platform/bootstrap
     helm:
       values: |
+        allNodeNames: {{ .Values.allNodeNames | quote }}
         deployer:
         {{- .Values.deployer | toYaml | nindent 10 }}
         {{- if .Values.platformValues }}
         {{- .Values.platformValues | toYaml | nindent 8 }}
         {{- end }}
-        allNodeNames: {{ .Values.allNodeNames | quote }}
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:

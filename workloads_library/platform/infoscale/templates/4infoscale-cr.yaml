@@ -8,9 +8,9 @@ metadata:
 spec:
   encrypted: false
   clusterInfo:
-    - nodeName: {{ first .Values.allNodeNames | quote }}
-      excludeDevice:
-      - "/dev/disk/by-path/pci-0000:08:00.0"
+  - nodeName: {{ first .Values.allNodeNames | quote }}
+    excludeDevice:
+    - "/dev/disk/by-path/pci-0000:08:00.0"
   sameEncKey: false
   enableScsi3pr: false
   isSharedStorage: true
