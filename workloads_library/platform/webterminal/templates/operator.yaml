@@ -1,4 +1,4 @@
-{{ if .Values.operator -}}
+{{ if .Values.operator.enabled -}}
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription

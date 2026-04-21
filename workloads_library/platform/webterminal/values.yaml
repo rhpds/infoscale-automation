@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 operator:
-  enabled: false
+  enabled: true
   name: web-terminal
   namespace: openshift-operators
   channel: fast
@@ -13,14 +13,14 @@ operator:
   # startingCSV: web-terminal.x.y.z
   syncwave: -5
 
-# Using sub-chart helper-status-checker
-helper-status-checker:
-  enabled: true
-  approver: false
-  checks:
-    - operatorName: web-terminal
-      namespace:
-        name: openshift-operators
-      syncwave: "1"
-      serviceAccount:
-        name: "webterminal-status-checker"
+# # Using sub-chart helper-status-checker
+# helper-status-checker:
+#   enabled: true
+#   approver: false
+#   checks:
+#     - operatorName: web-terminal
+#       namespace:
+#         name: openshift-operators
+#       syncwave: "1"
+#       serviceAccount:
+#         name: "webterminal-status-checker"
