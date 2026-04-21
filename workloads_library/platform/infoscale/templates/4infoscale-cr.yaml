@@ -16,3 +16,4 @@ spec:
   - nodeName: {{ index .Values.allNodeNames 1 | quote }}
     excludeDevice:
     - "/dev/disk/by-path/pci-0000:08:00.0"
+    - "/dev/disk/by-path/pci-0000:0c:00.0"

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(kubectl get *)",
+      "Bash(oc get *)",
+      "Bash(oc explain *)",
+      "Bash(oc debug *)",
+      "Bash(grep -E 'vd[c-f]$')"
+    ]
+  }
+}
