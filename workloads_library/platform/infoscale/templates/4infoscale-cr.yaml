@@ -13,7 +13,7 @@ spec:
   isSharedStorage: true
   version: 9.1.2
   clusterInfo:
-  - nodeName: {{ index .Values.allNodeNames 1 | quote }}
+  - nodeName: {{ index .Values.allNodeNames (.Values.nodeIndex | int) | quote }}
     excludeDevice:
     - "/dev/disk/by-path/pci-0000:08:00.0"
     - "/dev/disk/by-path/pci-0000:0c:00.0"

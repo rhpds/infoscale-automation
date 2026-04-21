@@ -18,6 +18,7 @@ spec:
         {{- if $.Values.allNodeNames }}
         {{- $.Values.allNodeNames | toYaml | nindent 10 }}
         {{- end }}
+        nodeIndex: {{ if eq $dest "in-cluster" }}1{{ else }}0{{ end }}
         deployer:
         {{- $.Values.deployer | toYaml | nindent 10 }}
         {{- if $.Values.platformValues }}
