@@ -109,6 +109,17 @@ keycloakResources:
 # See each workload's README in workloads_library/infra/<name>/ for details.
 # ===========================================================================
 
+# Image Registry — enables the internal registry with emptyDir storage.
+# No separate platform-layer workload.
+imageRegistry:
+  enabled: true
+  destinations:
+    - in-cluster
+    - *secondary
+  git:
+    path: workloads_library/infra/image-registry
+    <<: *git_defaults
+
 infoscaleOperator:
   enabled: true
   destinations:

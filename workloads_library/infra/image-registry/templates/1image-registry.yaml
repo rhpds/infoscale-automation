@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: enable-image-registry
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "-60"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: enable-image-registry
+  annotations:
+    argocd.argoproj.io/sync-wave: "-60"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: enable-image-registry
+  namespace: default
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: enable-image-registry
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "-60"
+spec:
+  backoffLimit: 10
+  template:
+    spec:
+      serviceAccountName: enable-image-registry
+      restartPolicy: Never
+      containers:
+      - name: enable-image-registry
+        image: bitnami/kubectl
+        command:
+        - /bin/bash
+        - -c
+        - |
+          set -euo pipefail
+
+          STATE=$(kubectl get configs.imageregistry.operator.openshift.io cluster \
+            -o jsonpath='{.spec.managementState}')
+
+          if [ "$STATE" = "Managed" ]; then
+            echo "Image registry already Managed, skipping."
+            exit 0
+          fi
+
+          echo "Setting image registry to Managed with emptyDir storage..."
+          kubectl patch configs.imageregistry.operator.openshift.io cluster \
+            --type merge -p '{"spec":{"managementState":"Managed","storage":{"emptyDir":{}}}}'
+
+          echo "Done. Image registry is now Managed."
