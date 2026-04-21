@@ -36,8 +36,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: set-default-sc
-        # image: image-registry.openshift-image-registry.svc:5000/openshift/cli
-        image: bitnami/kubectl
+        image: image-registry.openshift-image-registry.svc:5000/openshift/cli
         command:
         - /bin/bash
         - -c

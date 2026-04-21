@@ -36,8 +36,7 @@ spec:
       serviceAccountName: create-infoscale-cr-job
       containers:
       - name: create-infoscale-cr-job
-        image: bitnami/kubectl:latest
-        #image: image-registry.openshift-image-registry.svc:5000/openshift/cli
+        image: image-registry.openshift-image-registry.svc:5000/openshift/cli
         command:
         - /bin/sh
         - -c
