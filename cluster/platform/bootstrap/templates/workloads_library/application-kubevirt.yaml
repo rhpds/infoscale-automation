@@ -1,18 +1,19 @@
-{{ if .Values.infoscale.enabled -}}
+{{ if .Values.kubevirt.enabled -}}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: infoscale
+  name: kubevirt
   namespace: openshift-gitops
 spec:
   project: platform
   source:
-    repoURL: {{ .Values.infoscale.git.repoURL }}
-    targetRevision: {{ .Values.infoscale.git.targetRevision }}
-    path: {{ .Values.infoscale.git.path }}
+    repoURL: {{ .Values.kubevirt.git.repoURL }}
+    targetRevision: {{ .Values.kubevirt.git.targetRevision }}
+    path: {{ .Values.kubevirt.git.path }}
     helm:
       values: |
-        nodeName: {{ .Values.nodeName | quote }}
+        allNodeNames: {{ .Values.allNodeNames | quote }}
+        nonce: nonce
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
@@ -28,4 +29,9 @@ spec:
         duration: 5s
         factor: 2
         maxDuration: 3m
+  ignoreDifferences:
+  - group: "hco.kubevirt.io"
+    kind: "HyperConverged"
+    jsonPointers:
+    - /spec/enableCommonBootImageImport
 {{- end }}
