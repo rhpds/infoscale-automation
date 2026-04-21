@@ -1,0 +1,31 @@
+{{ if .Values.certManagerOperator.enabled -}}
+{{- range $dest := .Values.certManagerOperator.destinations }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager-operator{{- if ne $dest "in-cluster" }}-{{ $dest }}{{- end }}
+  namespace: openshift-gitops
+spec:
+  project: infra
+  source:
+    repoURL: {{ $.Values.certManagerOperator.git.repoURL }}
+    targetRevision: {{ $.Values.certManagerOperator.git.targetRevision }}
+    path: {{ $.Values.certManagerOperator.git.path }}
+  destination:
+    name: {{ $dest }}
+  syncPolicy:
+    automated:
+      enabled: true
+    syncOptions:
+      - CreateNamespace=true
+      - SkipDryRunOnMissingResource=true
+      - RespectIgnoreDifferences=true
+    retry:
+      limit: 10
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+{{- end }}
+{{- end }}

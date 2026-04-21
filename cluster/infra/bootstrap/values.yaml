@@ -120,6 +120,17 @@ imageRegistry:
     path: workloads_library/infra/image-registry
     <<: *git_defaults
 
+# cert-manager Operator — required by InfoScale licensing operator.
+# Must deploy before infoscaleOperator on clusters without cert-manager.
+certManagerOperator:
+  enabled: true
+  destinations:
+    - in-cluster
+    - *secondary
+  git:
+    path: workloads_library/infra/cert-manager-operator
+    <<: *git_defaults
+
 infoscaleOperator:
   enabled: true
   destinations:
