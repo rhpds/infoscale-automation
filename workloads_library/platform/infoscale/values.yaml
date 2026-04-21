@@ -1,2 +1,4 @@
 # infoscale values
-nodeName: ""
+allNodeNames:
+  - one
+  - two
