@@ -1,0 +1,55 @@
+{{- if eq (.Values.nodeIndex | int) 1 }}
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: openmrs01
+  namespace: infoscale-vtas
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+  labels:
+    app: openmrs01
+spec:
+  runStrategy: RerunOnFailure
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: openmrs01
+    spec:
+      architecture: amd64
+      domain:
+        cpu:
+          cores: 1
+          sockets: 4
+          threads: 1
+        devices:
+          disks:
+            - name: rootdisk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+              model: virtio
+          rng: {}
+        memory:
+          guest: 8Gi
+      networks:
+        - name: default
+          pod: {}
+      terminationGracePeriodSeconds: 180
+      volumes:
+        - name: rootdisk
+          dataVolume:
+            name: openmrs-rootdisk
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userData: |-
+              #cloud-config
+              user: cloud-user
+              password: ev0t-55ur-w8xw
+              chpasswd: { expire: False }
+{{- end }}

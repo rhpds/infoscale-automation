@@ -1,0 +1,21 @@
+{{- if eq (.Values.nodeIndex | int) 1 }}
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: DataVolume
+metadata:
+  name: openmrs-rootdisk
+  namespace: infoscale-vtas
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+spec:
+  source:
+    http:
+      url: https://axjfkoyyx3u5.objectstorage.us-phoenix-1.oci.customer-oci.com/p/iTzjUCukiS0c54JxKE-T0LzcdD_WoWB0Y-1psgaWPwN7Vg7DqG8NK24tK0KaFSiF/n/axjfkoyyx3u5/b/rhelsummit/o/vmopenmrs01.qcow2
+  storage:
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 30Gi
+    storageClassName: infoscale-rootdisk-sc
+{{- end }}
