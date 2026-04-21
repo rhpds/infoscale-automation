@@ -58,5 +58,18 @@ spec:
             exit 0
           fi
 
-          kubectl patch argocd openshift-gitops -n openshift-gitops --type=json -p='[{"op":"add","path":"/spec/resourceHealthChecks/-","value":{"group":"infoscale.veritas.com","kind":"InfoScaleCluster","check":"hs = {}\nif obj.status ~= nil and obj.status.clusterState ~= nil then\n  if obj.status.clusterState == \"Healthy\" then\n    hs.status = \"Healthy\"\n    hs.message = \"InfoScaleCluster is healthy\"\n  elseif obj.status.clusterState == \"Degraded\" or obj.status.clusterState == \"Failed\" then\n    hs.status = \"Degraded\"\n    hs.message = \"clusterState is \" .. obj.status.clusterState\n  else\n    hs.status = \"Progressing\"\n    hs.message = \"Waiting for clusterState to become Healthy, current: \" .. obj.status.clusterState\n  end\nelse\n  hs.status = \"Progressing\"\n  hs.message = \"Waiting for InfoScaleCluster status\"\nend\nreturn hs"}}]'
+          HEALTHCHECK='{"group":"infoscale.veritas.com","kind":"InfoScaleCluster","check":"hs = {}\nif obj.status ~= nil and obj.status.clusterState ~= nil then\n  if obj.status.clusterState == \"Healthy\" then\n    hs.status = \"Healthy\"\n    hs.message = \"InfoScaleCluster is healthy\"\n  elseif obj.status.clusterState == \"Degraded\" or obj.status.clusterState == \"Failed\" then\n    hs.status = \"Degraded\"\n    hs.message = \"clusterState is \" .. obj.status.clusterState\n  else\n    hs.status = \"Progressing\"\n    hs.message = \"Waiting for clusterState to become Healthy, current: \" .. obj.status.clusterState\n  end\nelse\n  hs.status = \"Progressing\"\n  hs.message = \"Waiting for InfoScaleCluster status\"\nend\nreturn hs"}'
+
+          ARRAY_EXISTS=$(kubectl get argocd openshift-gitops -n openshift-gitops \
+            -o jsonpath='{.spec.resourceHealthChecks}')
+
+          if [ -z "$ARRAY_EXISTS" ]; then
+            echo "resourceHealthChecks array does not exist, creating it."
+            kubectl patch argocd openshift-gitops -n openshift-gitops --type=json \
+              -p="[{\"op\":\"add\",\"path\":\"/spec/resourceHealthChecks\",\"value\":[${HEALTHCHECK}]}]"
+          else
+            echo "resourceHealthChecks array exists, appending."
+            kubectl patch argocd openshift-gitops -n openshift-gitops --type=json \
+              -p="[{\"op\":\"add\",\"path\":\"/spec/resourceHealthChecks/-\",\"value\":${HEALTHCHECK}}]"
+          fi
 {{- end -}}
