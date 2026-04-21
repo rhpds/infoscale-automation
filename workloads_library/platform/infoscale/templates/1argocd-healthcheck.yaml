@@ -49,6 +49,14 @@ spec:
           echo "# Patch the argocd instance to add InfoScaleCluster health check"
           echo "######################"
 
+          EXISTING=$(oc get argocd openshift-gitops -n openshift-gitops \
+            -o jsonpath='{.spec.resourceHealthChecks[?(@.kind=="InfoScaleCluster")].kind}')
+
+          if [ "$EXISTING" = "InfoScaleCluster" ]; then
+            echo "InfoScaleCluster health check already exists, skipping."
+            exit 0
+          fi
+
           oc patch argocd openshift-gitops -n openshift-gitops --type=json -p='[
             {
               "op": "add",
@@ -56,7 +64,23 @@ spec:
               "value": {
                 "group": "infoscale.veritas.com",
                 "kind": "InfoScaleCluster",
-                "check": "hs = {}\nif obj.status ~= nil and obj.status.clusterState ~= nil then\n  if obj.status.clusterState == \"Healthy\" then\n    hs.status = \"Healthy\"\n    hs.message = \"InfoScaleCluster is healthy\"\n  elseif obj.status.clusterState == \"Degraded\" or obj.status.clusterState == \"Failed\" then\n    hs.status = \"Degraded\"\n    hs.message = \"clusterState is \" .. obj.status.clusterState\n  else\n    hs.status = \"Progressing\"\n    hs.message = \"Waiting for clusterState to become Healthy, current: \" .. obj.status.clusterState\n  end\nelse\n  hs.status = \"Progressing\"\n  hs.message = \"Waiting for InfoScaleCluster status\"\nend\nreturn hs"
+                "check": "hs = {}\n
+                  if obj.status ~= nil and obj.status.clusterState ~= nil then\n
+                    if obj.status.clusterState == \"Healthy\" then\n
+                      hs.status = \"Healthy\"\n
+                      hs.message = \"InfoScaleCluster is healthy\"\n
+                    elseif obj.status.clusterState == \"Degraded\" or obj.status.clusterState == \"Failed\" then\n
+                      hs.status = \"Degraded\"\n
+                      hs.message = \"clusterState is \" .. obj.status.clusterState\n
+                    else\n
+                      hs.status = \"Progressing\"\n
+                      hs.message = \"Waiting for clusterState to become Healthy, current: \" .. obj.status.clusterState\n
+                    end\n
+                  else\n
+                    hs.status = \"Progressing\"\n
+                    hs.message = \"Waiting for InfoScaleCluster status\"\n
+                  end\n
+                  return hs"
               }
             }
           ]'
