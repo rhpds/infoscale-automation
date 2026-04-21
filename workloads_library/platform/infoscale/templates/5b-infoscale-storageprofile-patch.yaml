@@ -49,20 +49,20 @@ spec:
 
           echo "Waiting for StorageProfile '$SP_NAME' to exist..."
           for i in $(seq 1 60); do
-            if kubectlget storageprofile "$SP_NAME" &>/dev/null; then
+            if kubectl get storageprofile "$SP_NAME" &>/dev/null; then
               break
             fi
             echo "  attempt $i/60 — not found yet, waiting 10s..."
             sleep 10
           done
 
-          if ! kubectlget storageprofile "$SP_NAME" &>/dev/null; then
+          if ! kubectl get storageprofile "$SP_NAME" &>/dev/null; then
             echo "ERROR: StorageProfile '$SP_NAME' did not appear after 10 minutes."
             exit 1
           fi
 
           echo "Patching StorageProfile '$SP_NAME' with claimPropertySets..."
-          kubectlpatch storageprofile "$SP_NAME" --type=merge -p '{
+          kubectl patch storageprofile "$SP_NAME" --type=merge -p '{
             "spec": {
               "claimPropertySets": [
                 {"accessModes": ["ReadWriteMany"], "volumeMode": "Block"},
