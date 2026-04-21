@@ -13,6 +13,7 @@ spec:
     helm:
       values: |
         allNodeNames: {{ .Values.allNodeNames | quote }}
+        nonce: nonce
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
