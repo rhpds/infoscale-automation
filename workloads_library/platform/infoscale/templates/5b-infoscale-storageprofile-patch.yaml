@@ -38,7 +38,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: patch-storageprofile
-        image: image-registry.openshift-image-registry.svc:5000/openshift/cli
+        image: bitnami/kubectl
         command:
         - /bin/bash
         - -c
@@ -49,20 +49,20 @@ spec:
 
           echo "Waiting for StorageProfile '$SP_NAME' to exist..."
           for i in $(seq 1 60); do
-            if oc get storageprofile "$SP_NAME" &>/dev/null; then
+            if kubectlget storageprofile "$SP_NAME" &>/dev/null; then
               break
             fi
             echo "  attempt $i/60 — not found yet, waiting 10s..."
             sleep 10
           done
 
-          if ! oc get storageprofile "$SP_NAME" &>/dev/null; then
+          if ! kubectlget storageprofile "$SP_NAME" &>/dev/null; then
             echo "ERROR: StorageProfile '$SP_NAME' did not appear after 10 minutes."
             exit 1
           fi
 
           echo "Patching StorageProfile '$SP_NAME' with claimPropertySets..."
-          oc patch storageprofile "$SP_NAME" --type=merge -p '{
+          kubectlpatch storageprofile "$SP_NAME" --type=merge -p '{
             "spec": {
               "claimPropertySets": [
                 {"accessModes": ["ReadWriteMany"], "volumeMode": "Block"},

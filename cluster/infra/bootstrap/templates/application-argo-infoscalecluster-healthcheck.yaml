@@ -40,7 +40,7 @@ spec:
       serviceAccountName: argocd33-infoscalecluster-healthcheck
       containers:
       - name: argocd33-infoscalecluster-healthcheck
-        image: registry.redhat.io/openshift4/ose-cli:latest
+        image: bitnami/kubectl
         command:
         - /bin/sh
         - -c
