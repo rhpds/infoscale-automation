@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: patch-infoscale-storageprofile
+  namespace: infoscale-vtas
+  annotations:
+    argocd.argoproj.io/sync-wave: "12"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: patch-infoscale-storageprofile
+  annotations:
+    argocd.argoproj.io/sync-wave: "12"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: patch-infoscale-storageprofile
+  namespace: infoscale-vtas
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: patch-infoscale-storageprofile
+  namespace: infoscale-vtas
+  annotations:
+    argocd.argoproj.io/sync-wave: "12"
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 10
+  template:
+    spec:
+      serviceAccountName: patch-infoscale-storageprofile
+      restartPolicy: Never
+      containers:
+      - name: patch-storageprofile
+        image: registry.redhat.io/openshift4/ose-cli:latest
+        command:
+        - /bin/bash
+        - -c
+        - |
+          set -euo pipefail
+
+          SP_NAME="infoscale-rootdisk-sc"
+
+          echo "Waiting for StorageProfile '$SP_NAME' to exist..."
+          for i in $(seq 1 60); do
+            if oc get storageprofile "$SP_NAME" &>/dev/null; then
+              break
+            fi
+            echo "  attempt $i/60 — not found yet, waiting 10s..."
+            sleep 10
+          done
+
+          if ! oc get storageprofile "$SP_NAME" &>/dev/null; then
+            echo "ERROR: StorageProfile '$SP_NAME' did not appear after 10 minutes."
+            exit 1
+          fi
+
+          echo "Patching StorageProfile '$SP_NAME' with claimPropertySets..."
+          oc patch storageprofile "$SP_NAME" --type=merge -p '{
+            "spec": {
+              "claimPropertySets": [
+                {"accessModes": ["ReadWriteMany"], "volumeMode": "Block"},
+                {"accessModes": ["ReadWriteOnce"], "volumeMode": "Block"},
+                {"accessModes": ["ReadWriteOnce"], "volumeMode": "Filesystem"},
+                {"accessModes": ["ReadWriteMany"], "volumeMode": "Filesystem"}
+              ]
+            }
+          }'
+
+          echo "Done. StorageProfile '$SP_NAME' patched."
