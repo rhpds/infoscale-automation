@@ -29,6 +29,8 @@ default_settings: &git_defaults
   repoURL: https://github.com/rhpds/infoscale-automation.git
   targetRevision: main
 
+secondary_cluster: &secondary sno1
+
 # ---------------------------------------------------------------------------
 # deployer — forwarded here verbatim from the infra bootstrap.
 # Used by templates that need the cluster domain (e.g., provision data ConfigMaps,
@@ -39,6 +41,9 @@ deployer:
 
 infoscale:
   enabled: true
+  destinations:
+    - in-cluster
+    - *secondary
   git:
     path: workloads_library/platform/infoscale
     <<: *git_defaults

@@ -1,28 +1,30 @@
 {{ if .Values.infoscale.enabled -}}
+{{- range $dest := .Values.infoscale.destinations }}
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: infoscale
+  name: infoscale{{- if ne $dest "in-cluster" }}-{{ $dest }}{{- end }}
   namespace: openshift-gitops
 spec:
   project: platform
   source:
-    repoURL: {{ .Values.infoscale.git.repoURL }}
-    targetRevision: {{ .Values.infoscale.git.targetRevision }}
-    path: {{ .Values.infoscale.git.path }}
+    repoURL: {{ $.Values.infoscale.git.repoURL }}
+    targetRevision: {{ $.Values.infoscale.git.targetRevision }}
+    path: {{ $.Values.infoscale.git.path }}
     helm:
       values: |
         allNodeNames:
-        {{- if .Values.allNodeNames }}
-        {{- .Values.allNodeNames | toYaml | nindent 10 }}
+        {{- if $.Values.allNodeNames }}
+        {{- $.Values.allNodeNames | toYaml | nindent 10 }}
         {{- end }}
         deployer:
-        {{- .Values.deployer | toYaml | nindent 10 }}
-        {{- if .Values.platformValues }}
-        {{- .Values.platformValues | toYaml | nindent 8 }}
+        {{- $.Values.deployer | toYaml | nindent 10 }}
+        {{- if $.Values.platformValues }}
+        {{- $.Values.platformValues | toYaml | nindent 8 }}
         {{- end }}
   destination:
-    server: https://kubernetes.default.svc
+    name: {{ $dest }}
   syncPolicy:
     automated:
       enabled: true
@@ -36,4 +38,5 @@ spec:
         duration: 5s
         factor: 2
         maxDuration: 3m
+{{- end }}
 {{- end }}

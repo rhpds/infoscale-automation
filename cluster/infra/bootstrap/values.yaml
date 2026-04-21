@@ -31,6 +31,9 @@ default_settings: &git_defaults
   repoURL: https://github.com/rhpds/infoscale-automation.git
   targetRevision: main
 
+secondary_cluster: &secondary sno1
+
+
 # ---------------------------------------------------------------------------
 # deployer — injected automatically by the ocp4_workload_gitops_bootstrap role.
 # These placeholders exist only so `helm template` works locally without a cluster.
@@ -108,6 +111,9 @@ keycloakResources:
 
 infoscaleOperator:
   enabled: true
+  destinations:
+    - in-cluster
+    - *secondary
   git:
     path: workloads_library/infra/infoscale-operator
     <<: *git_defaults
@@ -122,6 +128,9 @@ infoscalePlatform:
 # No separate platform-layer workload.
 lvmsOperator:
   enabled: true
+  destinations:
+    - in-cluster
+    - *secondary
   git:
     path: workloads_library/infra/lvms-operator
     <<: *git_defaults
@@ -138,6 +147,9 @@ deschedulerOperator:
 # Platform pair: kubevirt (in platform values)
 kubevirtOperator:
   enabled: true
+  destinations:
+    - in-cluster
+    - *secondary
   git:
     path: workloads_library/infra/kubevirt-operator
     <<: *git_defaults
