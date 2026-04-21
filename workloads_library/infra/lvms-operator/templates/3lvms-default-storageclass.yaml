@@ -36,7 +36,8 @@ spec:
       restartPolicy: Never
       containers:
       - name: set-default-sc
-        image: image-registry.openshift-image-registry.svc:5000/openshift/cli
+        # image: image-registry.openshift-image-registry.svc:5000/openshift/cli
+        image: bitnami/kubectl
         command:
         - /bin/bash
         - -c
@@ -47,32 +48,32 @@ spec:
 
           echo "Waiting for StorageClass '$SC_NAME' to exist..."
           for i in $(seq 1 60); do
-            if oc get storageclass "$SC_NAME" &>/dev/null; then
+            if kubectl get storageclass "$SC_NAME" &>/dev/null; then
               break
             fi
             echo "  attempt $i/60 — not found yet, waiting 10s..."
             sleep 10
           done
 
-          if ! oc get storageclass "$SC_NAME" &>/dev/null; then
+          if ! kubectl get storageclass "$SC_NAME" &>/dev/null; then
             echo "ERROR: StorageClass '$SC_NAME' did not appear after 10 minutes."
             exit 1
           fi
 
           echo "Removing default annotation from any existing default StorageClass..."
-          DEFAULTS=$(oc get storageclass \
+          DEFAULTS=$(kubectl get storageclass \
             -o jsonpath='{range .items[?(@.metadata.annotations.storageclass\.kubernetes\.io/is-default-class=="true")]}{.metadata.name}{"\n"}{end}')
 
           for SC in $DEFAULTS; do
             if [ "$SC" != "$SC_NAME" ]; then
               echo "  unsetting default on '$SC'"
-              oc patch storageclass "$SC" \
+              kubectl patch storageclass "$SC" \
                 -p '{"metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
             fi
           done
 
           echo "Setting '$SC_NAME' as the default StorageClass..."
-          oc patch storageclass "$SC_NAME" \
+          kubectl patch storageclass "$SC_NAME" \
             -p '{"metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 
           echo "Done. '$SC_NAME' is now the default StorageClass."
