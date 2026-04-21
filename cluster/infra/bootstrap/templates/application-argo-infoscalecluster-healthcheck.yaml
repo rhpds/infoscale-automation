@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: argocd33-subscription-healthcheck
+  name: argocd33-infoscalecluster-healthcheck
   namespace: default
   annotations:
     argocd.argoproj.io/sync-wave: "-10"
@@ -12,7 +12,7 @@ metadata:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: argocd33-subscription-healthcheck
+  name: argocd33-infoscalecluster-healthcheck
   annotations:
     argocd.argoproj.io/sync-wave: "-10"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
@@ -22,13 +22,13 @@ roleRef:
   name: cluster-admin
 subjects:
 - kind: ServiceAccount
-  name: argocd33-subscription-healthcheck
+  name: argocd33-infoscalecluster-healthcheck
   namespace: default
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: argocd33-subscription-healthcheck
+  name: argocd33-infoscalecluster-healthcheck
   namespace: default
   annotations:
     argocd.argoproj.io/sync-wave: "-10"
@@ -37,16 +37,16 @@ spec:
   template:
     spec:
       restartPolicy: Never
-      serviceAccountName: argocd33-subscription-healthcheck
+      serviceAccountName: argocd33-infoscalecluster-healthcheck
       containers:
-      - name: argocd33-subscription-healthcheck
+      - name: argocd33-infoscalecluster-healthcheck
         image: image-registry.openshift-image-registry.svc:5000/openshift/cli
         command:
         - /bin/sh
         - -c
         - |
           echo "######################"
-          echo "# Patch the argocd instance to enable subscription health checks"
+          echo "# Patch the argocd instance to enable infoscalecluster health checks"
           echo "######################"
 
           oc patch argocd openshift-gitops -n openshift-gitops --type=json -p='[
@@ -56,8 +56,8 @@ spec:
               "value": [
                 {
                   "group": "operator.coreos.com",
-                  "kind": "Subscription",
-                  "check": "health_status = {}\nif obj.status ~= nil then\n  if obj.status.conditions ~= nil then\n    numDegraded = 0\n    numPending = 0\n    msg = \"\"\n    for i, condition in pairs(obj.status.conditions) do\n      msg = msg .. i .. \": \" .. condition.type .. \" | \" .. condition.status .. \"\\n\"\n      if condition.type == \"InstallPlanPending\" and condition.status == \"True\" then\n        numPending = numPending + 1\n      elseif (condition.type == \"InstallPlanMissing\" and condition.reason ~= \"ReferencedInstallPlanNotFound\") then\n        numDegraded = numDegraded + 1\n      elseif (condition.type == \"CatalogSourcesUnhealthy\" or condition.type == \"InstallPlanFailed\") and condition.status == \"True\" then\n        numDegraded = numDegraded + 1\n      end\n    end\n    if numDegraded == 0 and numPending == 0 then\n      health_status.status = \"Healthy\"\n      health_status.message = msg\n      return health_status\n    elseif numPending > 0 and numDegraded == 0 then\n      health_status.status = \"Progressing\"\n      health_status.message = \"An install plan for a subscription is pending installation\"\n      return health_status\n    else\n      health_status.status = \"Degraded\"\n      health_status.message = msg\n      return health_status\n    end\n  end\nend\nhealth_status.status = \"Progressing\"\nhealth_status.message = \"An install plan for a subscription is pending installation\"\nreturn health_status"
+                  "kind": "infoscalecluster",
+                  "check": "health_status = {}\nif obj.status ~= nil then\n  if obj.status.conditions ~= nil then\n    numDegraded = 0\n    numPending = 0\n    msg = \"\"\n    for i, condition in pairs(obj.status.conditions) do\n      msg = msg .. i .. \": \" .. condition.type .. \" | \" .. condition.status .. \"\\n\"\n      if condition.type == \"InstallPlanPending\" and condition.status == \"True\" then\n        numPending = numPending + 1\n      elseif (condition.type == \"InstallPlanMissing\" and condition.reason ~= \"ReferencedInstallPlanNotFound\") then\n        numDegraded = numDegraded + 1\n      elseif (condition.type == \"CatalogSourcesUnhealthy\" or condition.type == \"InstallPlanFailed\") and condition.status == \"True\" then\n        numDegraded = numDegraded + 1\n      end\n    end\n    if numDegraded == 0 and numPending == 0 then\n      health_status.status = \"Healthy\"\n      health_status.message = msg\n      return health_status\n    elseif numPending > 0 and numDegraded == 0 then\n      health_status.status = \"Progressing\"\n      health_status.message = \"An install plan for a infoscalecluster is pending installation\"\n      return health_status\n    else\n      health_status.status = \"Degraded\"\n      health_status.message = msg\n      return health_status\n    end\n  end\nend\nhealth_status.status = \"Progressing\"\nhealth_status.message = \"An install plan for a infoscalecluster is pending installation\"\nreturn health_status"
                 }
               ]
             }
