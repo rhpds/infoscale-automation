@@ -65,7 +65,7 @@ spec:
               SC_NAME="{{ .Values.storageClassName }}"
 
               echo "Checking for an existing default StorageClass..."
-              DEFAULT=$(oc get storageclass \
+              DEFAULT=$(kubectlget storageclass \
                 -o jsonpath='{range .items[?(@.metadata.annotations.storageclass\.kubernetes\.io/is-default-class=="true")]}{.metadata.name}{"\n"}{end}')
 
               if [ -n "$DEFAULT" ]; then
@@ -77,13 +77,13 @@ spec:
               echo "No default StorageClass found."
               echo "Checking if StorageClass '$SC_NAME' exists..."
 
-              if ! oc get storageclass "$SC_NAME" &>/dev/null; then
+              if ! kubectlget storageclass "$SC_NAME" &>/dev/null; then
                 echo "ERROR: StorageClass '$SC_NAME' does not exist on this cluster."
                 exit 1
               fi
 
               echo "Setting '$SC_NAME' as the default StorageClass..."
-              oc patch storageclass "$SC_NAME" \
+              kubectlpatch storageclass "$SC_NAME" \
                 -p '{"metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 
               echo "Done. '$SC_NAME' is now the default StorageClass."
