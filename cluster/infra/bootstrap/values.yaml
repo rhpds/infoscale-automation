@@ -125,7 +125,6 @@ imageRegistry:
 certManagerOperator:
   enabled: true
   destinations:
-    - in-cluster
     - *secondary
   git:
     path: workloads_library/infra/cert-manager-operator
