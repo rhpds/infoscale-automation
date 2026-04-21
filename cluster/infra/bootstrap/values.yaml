@@ -118,6 +118,14 @@ infoscalePlatform:
     path: workloads_library/platform/infoscale
     <<: *git_defaults
 
+# LVM Storage Operator — provides local PVs via LVM thin pools.
+# No separate platform-layer workload.
+lvmsOperator:
+  enabled: true
+  git:
+    path: workloads_library/infra/lvms-operator
+    <<: *git_defaults
+
 # Descheduler Operator — evicts pods to rebalance nodes.
 # Platform pair: descheduler (in platform values)
 deschedulerOperator:
