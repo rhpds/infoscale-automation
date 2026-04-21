@@ -2,3 +2,6 @@
 allNodeNames:
   - one
   - two
+
+argocdInfoscaleHealthCheck:
+  enabled: false
