@@ -37,39 +37,11 @@ default_settings: &git_defaults
 deployer:
   domain: cluster.example.com
 
-# ---------------------------------------------------------------------------
-# platformExampleSharedGitlab — example of a cluster-wide shared service.
-# A GitLab CE instance shared across all tenant users. Disabled by default.
-# See cluster/platform/platform-example-shared-gitlab/ for the chart.
-# When enabled, the gitlab_url is automatically added to provision data.
-# ---------------------------------------------------------------------------
-platformExampleSharedGitlab:
-  enabled: false
-  git:
-    path: cluster/platform/platform-example-shared-gitlab
-    <<: *git_defaults
-
 infoscale:
   enabled: true
   git:
     path: workloads_library/platform/infoscale
     <<: *git_defaults
-
-# ---------------------------------------------------------------------------
-# OAuthAccountOperator — manages HTPasswd/LDAP identity providers on the cluster.
-# Disabled by default. The `config` block below is passed to the operator chart.
-# ---------------------------------------------------------------------------
-OAuthAccountOperator:
-  enabled: false
-  authn: htpasswd
-  git:
-    path: helm
-    <<: *git_defaults
-  config:
-    type: HTPasswd
-    htpasswd:
-      htpasswdSecret:
-        name: htpasswd
 
 # ===========================================================================
 # WORKLOADS LIBRARY
@@ -82,68 +54,12 @@ OAuthAccountOperator:
 # require enabling BOTH the infra operator AND this platform workload.
 # ===========================================================================
 
-# Descheduler — creates the Descheduler CR and MachineConfig after the operator installs.
-# Infra pair: deschedulerOperator (in infra values)
-descheduler:
-  enabled: false
-  git:
-    path: workloads_library/platform/descheduler
-    <<: *git_defaults
-
-# GitLab — deploys a full GitLab CE instance (Deployment + PostgreSQL + Redis).
-# This is a standalone platform service, no infra-layer operator required.
-gitlab:
-  enabled: false
-  git:
-    path: workloads_library/platform/gitlab
-    <<: *git_defaults
-
 # KubeVirt (OpenShift Virtualization) — creates HyperConverged CR and StorageClass.
 # Infra pair: kubevirtOperator (in infra values)
 kubevirt:
-  enabled: false
+  enabled: true
   git:
     path: workloads_library/platform/kubevirt
-    <<: *git_defaults
-
-# Migration Toolkit for Containers — creates the MigrationController CR.
-# Infra pair: mtcOperator (in infra values)
-mtc:
-  enabled: false
-  git:
-    path: workloads_library/platform/mtc
-    <<: *git_defaults
-
-# Migration Toolkit for Virtualization — creates the ForkliftController CR.
-# Infra pair: mtvOperator (in infra values)
-mtv:
-  enabled: false
-  git:
-    path: workloads_library/platform/mtv
-    <<: *git_defaults
-
-# Node Health Check — patches the console plugin and creates remediation CRs.
-# Infra pair: nodeHealthCheckOperator (in infra values)
-nodeHealthCheck:
-  enabled: false
-  git:
-    path: workloads_library/platform/node-health-check
-    <<: *git_defaults
-
-# OpenShift Data Foundation — configures ODF StorageSystem and CSI tolerations.
-# Requires ODF operator to be installed at the cluster level (outside this repo).
-odf:
-  enabled: false
-  git:
-    path: workloads_library/platform/odf
-    <<: *git_defaults
-
-# Red Hat OpenShift AI — creates DSCInitialization and DataScienceCluster CRs.
-# Infra pair: rhoaiOperator (in infra values)
-rhoai:
-  enabled: false
-  git:
-    path: workloads_library/platform/rhoai
     <<: *git_defaults
 
 # Web Terminal — deploys the Web Terminal operator and creates the WebTerminal CR.
