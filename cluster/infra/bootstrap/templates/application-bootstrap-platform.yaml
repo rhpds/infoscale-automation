@@ -14,10 +14,10 @@ spec:
       values: |
         allNodeNames:
         {{- if .Values.allNodeNames }}
-        {{- .Values.allNodeNames | toYaml | nindent 8 }}
+        {{- .Values.allNodeNames | toYaml | nindent 10 }}
         {{- end }}
         deployer:
-        {{- .Values.deployer | toYaml | nindent 8 }}
+        {{- .Values.deployer | toYaml | nindent 10 }}
         {{- if .Values.platformValues }}
         {{- .Values.platformValues | toYaml | nindent 8 }}
         {{- end }}
