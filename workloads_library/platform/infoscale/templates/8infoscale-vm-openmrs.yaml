@@ -3,7 +3,7 @@ apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
   name: openmrs01
-  namespace: infoscale-vtas
+  namespace: openmrs
   annotations:
     argocd.argoproj.io/sync-wave: "20"
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
