@@ -8,7 +8,7 @@ metadata:
 spec:
   encrypted: false
   clusterInfo:
-  - nodeName: {{ first .Values.allNodeNames | quote }}
+  - nodeName: {{ index .Values.allNodeNames 1 }}
     excludeDevice:
     - "/dev/disk/by-path/pci-0000:08:00.0"
   sameEncKey: false
