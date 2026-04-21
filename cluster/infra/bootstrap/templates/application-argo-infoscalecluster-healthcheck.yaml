@@ -40,7 +40,8 @@ spec:
       serviceAccountName: argocd33-infoscalecluster-healthcheck
       containers:
       - name: argocd33-infoscalecluster-healthcheck
-        image: image-registry.openshift-image-registry.svc:5000/openshift/cli
+        # image: image-registry.openshift-image-registry.svc:5000/openshift/cli
+        image: bitnami/kubectl
         command:
         - /bin/sh
         - -c
@@ -49,7 +50,7 @@ spec:
           echo "# Patch the argocd instance to enable infoscalecluster health checks"
           echo "######################"
 
-          oc patch argocd openshift-gitops -n openshift-gitops --type=json -p='[
+          kubectl patch argocd openshift-gitops -n openshift-gitops --type=json -p='[
             {
               "op": "replace",
               "path": "/spec/resourceHealthChecks",
