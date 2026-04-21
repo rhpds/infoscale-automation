@@ -50,7 +50,7 @@ spec:
           echo "# Patch the argocd instance to add InfoScaleCluster health check"
           echo "######################"
 
-          EXISTING=$(oc get argocd openshift-gitops -n openshift-gitops \
+          EXISTING=$(kubectl get argocd openshift-gitops -n openshift-gitops \
             -o jsonpath='{.spec.resourceHealthChecks[?(@.kind=="InfoScaleCluster")].kind}')
 
           if [ "$EXISTING" = "InfoScaleCluster" ]; then
