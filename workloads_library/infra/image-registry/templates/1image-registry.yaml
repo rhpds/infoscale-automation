@@ -45,14 +45,16 @@ spec:
 
           STATE=$(kubectl get configs.imageregistry.operator.openshift.io cluster \
             -o jsonpath='{.spec.managementState}')
+          SC=$(kubectl get configs.imageregistry.operator.openshift.io cluster \
+            -o jsonpath='{.spec.storage.pvc.storageClassName}' 2>/dev/null || true)
 
-          if [ "$STATE" = "Managed" ]; then
-            echo "Image registry already Managed, skipping."
+          if [ "$STATE" = "Managed" ] && [ "$SC" = "lvms-vg1" ]; then
+            echo "Image registry already Managed with lvms-vg1 PVC, skipping."
             exit 0
           fi
 
-          echo "Setting image registry to Managed with emptyDir storage..."
+          echo "Setting image registry to Managed with PVC storage (lvms-vg1)..."
           kubectl patch configs.imageregistry.operator.openshift.io cluster \
-            --type merge -p '{"spec":{"managementState":"Managed","storage":{"emptyDir":{}}}}'
+            --type merge -p '{"spec":{"managementState":"Managed","storage":{"pvc":{"claim":"","storageClassName":"lvms-vg1"}}}}'
 
-          echo "Done. Image registry is now Managed."
+          echo "Done. Image registry is now Managed with lvms-vg1 PVC storage."

@@ -1,1 +1,1 @@
-storageClassName: ocs-external-storagecluster-ceph-rbd
+storageClassName: lvms-vg1
