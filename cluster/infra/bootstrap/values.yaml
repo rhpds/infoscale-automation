@@ -31,7 +31,7 @@ default_settings: &git_defaults
   repoURL: https://github.com/rhpds/infoscale-automation.git
   targetRevision: main
 
-secondary_cluster: &secondary sno1
+secondary_cluster: &secondary dr
 
 
 # ---------------------------------------------------------------------------
