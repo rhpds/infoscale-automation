@@ -55,8 +55,24 @@ spec:
             exit 0
           fi
 
+          echo "Creating 10Gi PVC for image registry..."
+          kubectl apply -f - <<'EOF'
+          apiVersion: v1
+          kind: PersistentVolumeClaim
+          metadata:
+            name: image-registry-storage
+            namespace: openshift-image-registry
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 10Gi
+            storageClassName: lvms-vg1
+          EOF
+
           echo "Setting image registry to Managed with PVC storage (lvms-vg1)..."
           kubectl patch configs.imageregistry.operator.openshift.io cluster \
-            --type merge -p '{"spec":{"managementState":"Managed","storage":{"pvc":{"claim":"","storageClassName":"lvms-vg1"}}}}'
+            --type merge -p '{"spec":{"managementState":"Managed","storage":{"pvc":{"claim":"image-registry-storage","storageClassName":"lvms-vg1"}}}}'
 
           echo "Done. Image registry is now Managed with lvms-vg1 PVC storage."
