@@ -5,7 +5,8 @@
       "Bash(oc get *)",
       "Bash(oc explain *)",
       "Bash(oc debug *)",
-      "Bash(grep -E 'vd[c-f]$')"
+      "Bash(grep -E 'vd[c-f]$')",
+      "Bash(grep *)"
     ]
   }
 }
