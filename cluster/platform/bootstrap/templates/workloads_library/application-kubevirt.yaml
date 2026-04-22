@@ -15,7 +15,6 @@ spec:
     helm:
       values: |
         allNodeNames: {{ $.Values.allNodeNames | quote }}
-        nonce: nonce
   destination:
     name: {{ $dest }}
   syncPolicy:

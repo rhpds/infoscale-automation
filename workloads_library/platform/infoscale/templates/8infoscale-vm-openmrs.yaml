@@ -13,6 +13,21 @@ metadata:
     app: openmrs01
 spec:
   runStrategy: RerunOnFailure
+  dataVolumeTemplates:
+    - metadata:
+        name: openmrs-rootdisk
+      spec:
+        source:
+          pvc:
+            namespace: openshift-virtualization-os-images
+            name: openmrs-rootdisk
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 30Gi
+          storageClassName: infoscale-rootdisk-sc
   template:
     metadata:
       labels:
