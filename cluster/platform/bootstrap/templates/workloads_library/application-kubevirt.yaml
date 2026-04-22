@@ -1,21 +1,23 @@
 {{ if .Values.kubevirt.enabled -}}
+{{- range $dest := .Values.kubevirt.destinations }}
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kubevirt
+  name: kubevirt{{- if ne $dest "in-cluster" }}-{{ $dest }}{{- end }}
   namespace: openshift-gitops
 spec:
   project: platform
   source:
-    repoURL: {{ .Values.kubevirt.git.repoURL }}
-    targetRevision: {{ .Values.kubevirt.git.targetRevision }}
-    path: {{ .Values.kubevirt.git.path }}
+    repoURL: {{ $.Values.kubevirt.git.repoURL }}
+    targetRevision: {{ $.Values.kubevirt.git.targetRevision }}
+    path: {{ $.Values.kubevirt.git.path }}
     helm:
       values: |
-        allNodeNames: {{ .Values.allNodeNames | quote }}
+        allNodeNames: {{ $.Values.allNodeNames | quote }}
         nonce: nonce
   destination:
-    server: https://kubernetes.default.svc
+    name: {{ $dest }}
   syncPolicy:
     automated:
       enabled: true
@@ -34,4 +36,5 @@ spec:
     kind: "HyperConverged"
     jsonPointers:
     - /spec/enableCommonBootImageImport
+{{- end }}
 {{- end }}

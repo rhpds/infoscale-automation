@@ -63,6 +63,9 @@ infoscale:
 # Infra pair: kubevirtOperator (in infra values)
 kubevirt:
   enabled: true
+  destinations:
+    - in-cluster
+    - *secondary
   git:
     path: workloads_library/platform/kubevirt
     <<: *git_defaults
@@ -71,6 +74,9 @@ kubevirt:
 # No infra-layer pair; the operator installs via this chart directly.
 webterminal:
   enabled: true
+  destinations:
+    - in-cluster
+    - *secondary
   git:
     path: workloads_library/platform/webterminal
     <<: *git_defaults
