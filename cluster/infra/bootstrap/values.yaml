@@ -109,6 +109,17 @@ keycloakResources:
 # See each workload's README in workloads_library/infra/<name>/ for details.
 # ===========================================================================
 
+# htpasswd Auth — sets up htpasswd identity provider with a cluster-admin "admin" user.
+# No separate platform-layer workload.
+htpasswdAuth:
+  enabled: true
+  adminPassword: openshift
+  destinations:
+    - *secondary
+  git:
+    path: workloads_library/infra/htpasswd-auth
+    <<: *git_defaults
+
 # Image Registry — enables the internal registry with emptyDir storage.
 # No separate platform-layer workload.
 imageRegistry:
