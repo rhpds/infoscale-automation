@@ -15,6 +15,7 @@ spec:
     helm:
       values: |
         allNodeNames: {{ $.Values.allNodeNames | quote }}
+        nodeIndex: {{ if eq $dest "in-cluster" }}1{{ else }}0{{ end }}
   destination:
     name: {{ $dest }}
   syncPolicy:
