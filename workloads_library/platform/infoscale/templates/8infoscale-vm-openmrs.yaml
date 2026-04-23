@@ -9,6 +9,8 @@ metadata:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
   labels:
     app: openmrs01
+    # the workload watches for this to be ready to continue agnosticd run
+    app.kubernetes.io/instance: bootstrap-infra
 spec:
   runStrategy: RerunOnFailure
   dataVolumeTemplates:
