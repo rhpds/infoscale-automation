@@ -11,7 +11,8 @@ metadata:
 spec:
   source:
     http:
-      url: https://axjfkoyyx3u5.objectstorage.us-phoenix-1.oci.customer-oci.com/p/iTzjUCukiS0c54JxKE-T0LzcdD_WoWB0Y-1psgaWPwN7Vg7DqG8NK24tK0KaFSiF/n/axjfkoyyx3u5/b/rhelsummit/o/vmopenmrs01.qcow2
+      url: https://catalog-item-assets.s3.us-east-2.amazonaws.com/qcow_images/vmopenmrs01.qcow2
+      #url: https://axjfkoyyx3u5.objectstorage.us-phoenix-1.oci.customer-oci.com/p/iTzjUCukiS0c54JxKE-T0LzcdD_WoWB0Y-1psgaWPwN7Vg7DqG8NK24tK0KaFSiF/n/axjfkoyyx3u5/b/rhelsummit/o/vmopenmrs01.qcow2
   storage:
     accessModes:
       - ReadWriteOnce
