@@ -1,7 +1,7 @@
 apiVersion: infoscale.veritas.com/v1
 kind: InfoScaleCluster
 metadata:
-  name: cluster-prod
+  name: cluster-{{ if eq (.Values.nodeIndex | int) 1 }}prod{{ else }}dr{{ end }}
   namespace: infoscale-vtas
   annotations:
     argocd.argoproj.io/sync-wave: "5"
